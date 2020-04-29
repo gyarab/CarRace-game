@@ -164,6 +164,30 @@ namespace HoudiniEngineUnity
 					DrawSelectedTOPNode();
 				}
 			}
+
+			// Display cook event messages
+			string eventMsgs = "<color=#c0c0c0ff>Cook event messages and errors will be displayed here...</color>";
+			HEU_PDGSession pdgSession = HEU_PDGSession.GetPDGSession();
+			if (pdgSession != null)
+			{
+				string actualMsgs = pdgSession.GetEventMessages();
+				if (!string.IsNullOrEmpty(actualMsgs))
+				{
+					eventMsgs = string.Format("{0}", actualMsgs);
+				}
+			}
+
+			using (new EditorGUILayout.VerticalScope(_backgroundStyle))
+			{
+				EditorGUILayout.Space();
+
+				_eventMessageScrollPos = EditorGUILayout.BeginScrollView(_eventMessageScrollPos, false, false);
+				Vector2 textSize = _eventMessageStyle.CalcSize(new GUIContent(eventMsgs));
+				EditorGUILayout.PrefixLabel(_eventMessageContent);
+				EditorGUILayout.SelectableLabel(eventMsgs, _eventMessageStyle, GUILayout.ExpandHeight(true), 
+					GUILayout.ExpandWidth(true), GUILayout.MinWidth(textSize.x), GUILayout.MinHeight(textSize.y));
+				EditorGUILayout.EndScrollView();
+			}
 		}
 
 		/// <summary>
@@ -417,7 +441,7 @@ namespace HoudiniEngineUnity
 			_buttonDirtyContent = new GUIContent("Dirty Node", "Remove current TOP node's work items.");
 			_buttonCookContent = new GUIContent("Cook Node", "Generates and cooks current TOP node's work items.");
 
-			_autoloadContent = new GUIContent("Autoload Results", "Automatically load into Unity the generated geometry from work item resultsl.");
+			_autoloadContent = new GUIContent("Autoload Results", "Automatically load into Unity the generated geometry from work item results.");
 			_showHideResultsContent = new GUIContent("Show Results", "Show or Hide Results.");
 
 			_buttonDirtyAllContent = new GUIContent("Dirty All", "Removes all work items.");
@@ -425,6 +449,8 @@ namespace HoudiniEngineUnity
 
 			_buttonCancelCookContent = new GUIContent("Cancel Cook", "Cancel PDG cook.");
 			_buttonPauseCookContent = new GUIContent("Pause Cook", "Pause PDG cook.");
+
+			_eventMessageContent = new GUIContent("PDG Event Messages", "Messages from events generated during cooking the PDG graph.");
 
 			_backgroundStyle = new GUIStyle(GUI.skin.box);
 			RectOffset br = _backgroundStyle.margin;
@@ -464,6 +490,10 @@ namespace HoudiniEngineUnity
 			_boxStyleStatus.alignment = TextAnchor.MiddleCenter;
 			_boxStyleStatus.fontSize = 14;
 			_boxStyleStatus.stretchWidth = true;
+
+			_eventMessageStyle = new GUIStyle(EditorStyles.textArea);
+			_eventMessageStyle.richText = true;
+			_eventMessageStyle.normal.background = HEU_GeneralUtility.MakeTexture(1, 1, new Color(0, 0, 0, 1f));
 		}
 
 		public void RefreshUI()
@@ -553,6 +583,10 @@ namespace HoudiniEngineUnity
 		private GUIStyle _boxStyleTitle;
 		private GUIStyle _boxStyleValue;
 		private GUIStyle _boxStyleStatus;
+
+		private GUIContent _eventMessageContent;
+		private GUIStyle _eventMessageStyle;
+		private Vector2 _eventMessageScrollPos = new Vector2();
 
 		private Texture2D _boxTitleTexture;
 

@@ -263,7 +263,6 @@ namespace HoudiniEngineUnity
 				return false;
 			}
 
-			//HEU_PluginStorage.SaveSessionData(_sessionData);
 			Debug.LogFormat("Houdini Engine: Created Socket session with ID {0}.", _sessionData.SessionID);
 
 			// Make sure API version matches with plugin version
@@ -364,7 +363,6 @@ namespace HoudiniEngineUnity
 				return false;
 			}
 
-			//HEU_PluginStorage.SaveSessionData(_sessionData);
 			Debug.LogFormat("Houdini Engine: Created Pipe session with ID {0}.", _sessionData.SessionID);
 
 			// Make sure API version matches with plugin version
@@ -720,6 +718,13 @@ namespace HoudiniEngineUnity
 				}
 			}
 			HandleStatusResult(result, "Get Server Environment String", true, true);
+			return (result == HAPI_Result.HAPI_RESULT_SUCCESS);
+		}
+
+		public override bool GetServerEnvVarCount(out int env_count)
+		{
+			HAPI_Result result = HEU_HAPIImports.HAPI_GetServerEnvVarCount(ref _sessionData._HAPISession, out env_count);
+			HandleStatusResult(result, "Get Server Environment Var Count", true, true);
 			return (result == HAPI_Result.HAPI_RESULT_SUCCESS);
 		}
 
@@ -1460,10 +1465,10 @@ namespace HoudiniEngineUnity
 			return (result == HAPI_Result.HAPI_RESULT_SUCCESS);
 		}
 
-		public override bool GetInstanceTransforms(HAPI_NodeId nodeID, HAPI_RSTOrder rstOrder, [Out] HAPI_Transform[] transformsArray, int start, int length)
+		public override bool GetInstanceTransformsOnPart(HAPI_NodeId nodeID, HAPI_PartId partID, HAPI_RSTOrder rstOrder, [Out] HAPI_Transform[] transformsArray, int start, int length)
 		{
-			HAPI_Result result = HEU_HAPIImports.HAPI_GetInstanceTransforms(ref _sessionData._HAPISession, nodeID, rstOrder, transformsArray, start, length);
-			HandleStatusResult(result, "Getting Instance Transforms", false, true);
+			HAPI_Result result = HEU_HAPIImports.HAPI_GetInstanceTransformsOnPart(ref _sessionData._HAPISession, nodeID, partID, rstOrder, transformsArray, start, length);
+			HandleStatusResult(result, "Getting Instance Transforms On Part", false, true);
 			return (result == HAPI_Result.HAPI_RESULT_SUCCESS);
 		}
 

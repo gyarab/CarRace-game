@@ -692,16 +692,6 @@ namespace HoudiniEngineUnity
 			for (int n = 0; n < HEU_Defines.HAPI_SHEAR_VECTOR_SIZE; n++)
 				shear[n] = 0.0f;
 		}
-
-		public void CopyTo(ref HAPI_Transform dest)
-		{
-			position.CopyToWithResize<float>(ref dest.position);
-			rotationQuaternion.CopyToWithResize<float>(ref dest.rotationQuaternion);
-			scale.CopyToWithResize<float>(ref dest.scale);
-			shear.CopyToWithResize<float>(ref dest.shear);
-
-			dest.rstOrder = rstOrder;
-		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -1523,6 +1513,7 @@ namespace HoudiniEngineUnity
 		public int currentState;                       /// (HAPI_PDG_WorkItemState) value of current state for state change
 		public int lastState;                          /// (HAPI_PDG_WorkItemState) value of last state for state change
 		public int eventType;                          /// (HAPI_PDG_EventType) event type
+		public HAPI_StringHandle msgSH;                /// String handle of the event message (> 0 if there is a message)
 	};
 
 	[StructLayout(LayoutKind.Sequential)]
